@@ -52,7 +52,7 @@ public class Filename
      */
     public static String tableFileName(long number)
     {
-        return makeFileName(number, "sst");
+        return makeFileName(number, "ldb");
     }
 
     /**

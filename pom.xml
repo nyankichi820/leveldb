@@ -3,7 +3,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.iq80.leveldb</groupId>
+    <groupId>com.tinfoiled.mcpe.leveldb</groupId>
     <artifactId>leveldb-project</artifactId>
     <version>0.8-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -16,7 +16,6 @@
     <modules>
         <module>leveldb-api</module>
         <module>leveldb</module>
-        <module>leveldb-benchmark</module>
     </modules>
 
     <inceptionYear>2011</inceptionYear>
@@ -50,9 +49,9 @@
     </properties>
 
     <scm>
-        <connection>scm:git:git://github.com/dain/leveldb.git</connection>
-        <developerConnection>scm:git:git@github.com:dain/leveldb.git</developerConnection>
-        <url>http://github.com/dain/leveldb/tree/master</url>
+        <connection>scm:git:git://github.com/Tinfoiled/leveldb.git</connection>
+        <developerConnection>scm:git:git@github.com:Tinfoiled/leveldb.git</developerConnection>
+        <url>http://github.com/Tinfoiled/leveldb/tree/master</url>
     </scm>
 
     <prerequisites>
@@ -89,13 +88,13 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.iq80.leveldb</groupId>
+                <groupId>com.tinfoiled.mcpe.leveldb</groupId>
                 <artifactId>leveldb-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.iq80.leveldb</groupId>
+                <groupId>com.tinfoiled.mcpe.leveldb</groupId>
                 <artifactId>leveldb</artifactId>
                 <version>${project.version}</version>
             </dependency>

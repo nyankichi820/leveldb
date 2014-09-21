@@ -24,7 +24,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Comparator;
 
-import static org.iq80.leveldb.CompressionType.SNAPPY;
+import static org.iq80.leveldb.CompressionType.*;
 
 public class FileChannelTable extends Table
 {
@@ -63,17 +63,29 @@ public class FileChannelTable extends Table
 
         ByteBuffer uncompressedBuffer = read(blockHandle.getOffset(), blockHandle.getDataSize());
         Slice uncompressedData;
-        if (blockTrailer.getCompressionType() == SNAPPY) {
-            synchronized (FileChannelTable.class) {
-                int uncompressedLength = uncompressedLength(uncompressedBuffer);
-                if (uncompressedScratch.capacity() < uncompressedLength) {
-                    uncompressedScratch = ByteBuffer.allocateDirect(uncompressedLength);
-                }
-                uncompressedScratch.clear();
+        if (blockTrailer.getCompressionType() == ZLIB) {
+          synchronized (FileChannelTable.class) {
+              int uncompressedLength = uncompressedLength(uncompressedBuffer);
+              if (uncompressedScratch.capacity() < uncompressedLength) {
+                  uncompressedScratch = ByteBuffer.allocateDirect(uncompressedLength);
+              }
+              uncompressedScratch.clear();
 
-                Snappy.uncompress(uncompressedBuffer, uncompressedScratch);
-                uncompressedData = Slices.copiedBuffer(uncompressedScratch);
-            }
+              Zlib.uncompress(uncompressedBuffer, uncompressedScratch);
+              uncompressedData = Slices.copiedBuffer(uncompressedScratch);
+          }
+        }
+        else if (blockTrailer.getCompressionType() == SNAPPY) {
+          synchronized (FileChannelTable.class) {
+              int uncompressedLength = uncompressedLength(uncompressedBuffer);
+              if (uncompressedScratch.capacity() < uncompressedLength) {
+                  uncompressedScratch = ByteBuffer.allocateDirect(uncompressedLength);
+              }
+              uncompressedScratch.clear();
+
+              Snappy.uncompress(uncompressedBuffer, uncompressedScratch);
+              uncompressedData = Slices.copiedBuffer(uncompressedScratch);
+          }
         }
         else {
             uncompressedData = Slices.copiedBuffer(uncompressedBuffer);
