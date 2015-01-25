@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011 the original author or authors.
  * See the notice.md file distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,7 +24,8 @@ public enum CompressionType
     // MCPE-specific (as are all code blocks depending on it).
     ZLIB(0x02);
 
-    public static CompressionType getCompressionTypeByPersistentId(int persistentId) {
+    public static CompressionType getCompressionTypeByPersistentId(int persistentId)
+    {
         for (CompressionType compressionType : CompressionType.values()) {
             if (compressionType.persistentId == persistentId) {
                 return compressionType;

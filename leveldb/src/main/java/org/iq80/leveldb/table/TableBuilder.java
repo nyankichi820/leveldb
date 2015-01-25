@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2011 the original author or authors.
  * See the notice.md file distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,7 +24,8 @@ import org.iq80.leveldb.Options;
 import org.iq80.leveldb.util.PureJavaCrc32C;
 import org.iq80.leveldb.util.Slice;
 import org.iq80.leveldb.util.Slices;
-import org.iq80.leveldb.util.*;
+import org.iq80.leveldb.util.Snappy;
+import org.iq80.leveldb.util.Zlib;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -185,7 +186,8 @@ public class TableBuilder
             catch (IOException ignored) {
                 // compression failed, so just store uncompressed form
             }
-        } else if (compressionType == CompressionType.SNAPPY) {
+        }
+        else if (compressionType == CompressionType.SNAPPY) {
             ensureCompressedOutputCapacity(maxCompressedLength(raw.length()));
             try {
                 int compressedSize = Snappy.compress(raw.getRawArray(), raw.getRawOffset(), raw.length(), compressedOutput.getRawArray(), 0);
@@ -209,7 +211,7 @@ public class TableBuilder
         BlockHandle blockHandle = new BlockHandle(position, blockContents.length());
 
         // write data and trailer
-        position += fileChannel.write(new ByteBuffer[]{blockContents.toByteBuffer(), trailer.toByteBuffer()});
+        position += fileChannel.write(new ByteBuffer[] {blockContents.toByteBuffer(), trailer.toByteBuffer()});
 
         // clean up state
         blockBuilder.reset();
@@ -217,7 +219,7 @@ public class TableBuilder
         return blockHandle;
     }
 
-    private int maxCompressedLength(int length)
+    private static int maxCompressedLength(int length)
     {
         // Compressed data can be defined as:
         //    compressed := item* literal*
