@@ -21,6 +21,7 @@ import org.iq80.leveldb.util.Slice;
 import org.iq80.leveldb.util.Slices;
 import org.iq80.leveldb.util.Snappy;
 import org.iq80.leveldb.util.Zlib;
+import org.iq80.leveldb.util.Flate;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -29,6 +30,7 @@ import java.util.Comparator;
 
 import static org.iq80.leveldb.CompressionType.SNAPPY;
 import static org.iq80.leveldb.CompressionType.ZLIB;
+import static org.iq80.leveldb.CompressionType.FLATE;
 
 public class FileChannelTable
         extends Table
@@ -93,6 +95,18 @@ public class FileChannelTable
               uncompressedScratch.clear();
 
               Snappy.uncompress(uncompressedBuffer, uncompressedScratch);
+              uncompressedData = Slices.copiedBuffer(uncompressedScratch);
+          }
+        }
+        else if (blockTrailer.getCompressionType() == FLATE) {
+          synchronized (FileChannelTable.class) {
+              int uncompressedLength = uncompressedLength(uncompressedBuffer);
+              if (uncompressedScratch.capacity() < uncompressedLength) {
+                  uncompressedScratch = ByteBuffer.allocateDirect(uncompressedLength);
+              }
+              uncompressedScratch.clear();
+
+              Flate.uncompress(uncompressedBuffer, uncompressedScratch);
               uncompressedData = Slices.copiedBuffer(uncompressedScratch);
           }
         }

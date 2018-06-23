@@ -202,6 +202,21 @@ public class TableBuilder
                 // compression failed, so just store uncompressed form
             }
         }
+        else if (compressionType == CompressionType.FLATE) {
+            ensureCompressedOutputCapacity(maxCompressedLength(raw.length()));
+            try {
+                int compressedSize = Zlib.compress(raw.getRawArray(), raw.getRawOffset(), raw.length(), compressedOutput.getRawArray(), 0);
+
+                // Don't use the compressed data if compressed less than 12.5%,
+                if (compressedSize < raw.length() - (raw.length() / 8)) {
+                    blockContents = compressedOutput.slice(0, compressedSize);
+                    blockCompressionType = CompressionType.FLATE;
+                }
+            }
+            catch (IOException ignored) {
+                // compression failed, so just store uncompressed form
+            }
+        }
 
         // create block trailer
         BlockTrailer blockTrailer = new BlockTrailer(blockCompressionType, crc32c(blockContents, blockCompressionType));
